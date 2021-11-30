@@ -1,0 +1,25 @@
+!pip install streamlit --quiet
+!pip install pyngrok==4.1.1 --quiet
+from pyngrok import ngrok
+
+%%writefile app.py
+import streamlit as st
+st.title('Irish machine learning ')
+from sklearn.datasets import load_iris
+
+iris = load_iris()
+from sklearn.tree import DecisionTreeClassifier
+mode1 = DecisionTreeClassifier()
+mode1.fit(iris.data,iris.target)#training the model
+sl=st.slider('Sepal length',4.3,7.9,5.0)
+sw=st.slider('Sepal width',2.0,4.4,4.3)
+pl=st.slider('Petal length',1.0,6.9,5.0)
+pw=st.slider('Petal width',0.1,2.5,0.3)
+op = mode1.predict([[sl,sw,pl,pw]])
+res = iris.target_names[op[0]]
+st.title(res.upper())
+
+
+!nohup streamlit run app.py &
+url = ngrok.connect(port = 8501)
+print(url)
